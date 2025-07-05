@@ -18,6 +18,7 @@ const Cart = () => {
     setQuantities((prev) => ({
       ...prev,
       [id]: prev[id] + 1,
+      
     }));
   };
 
@@ -28,6 +29,14 @@ const Cart = () => {
     }));
   };
 
+  // Calculate overall total
+  const total = cart.reduce((acc, item) => {
+    return acc + item.price * quantities[item.id];
+  }, 0);
+
+  const discount = total * 0.1;
+  const finalTotal = total - discount;
+
   return (
     <div>
       <div className="text-4xl m-5 flex justify-center items-center">
@@ -37,13 +46,13 @@ const Cart = () => {
         {cart.length === 0 ? (
           <h1>Your cart is empty</h1>
         ) : (
-          <div>
+          <div className="w-full max-w-4xl">
             {cart.map((item) => (
               <div
                 key={item.id}
-                className="flex justify-center items-center border shadow-lg m-10 p-6 gap-6"
+                className="flex justify-between items-center border shadow-lg m-5 p-6 gap-6"
               >
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center w-1/4">
                   <strong>Category:</strong> {item.category}
                   <img
                     src={item.image}
@@ -55,19 +64,13 @@ const Cart = () => {
                     }}
                   />
                 </div>
-                <div className="text-lg">
-                  <strong>Price:</strong> ${item.price}
+                <div className="text-lg w-1/2">
+                  <strong>Price:</strong> ${item.price.toFixed(2)}
                   <br />
-                  <div  className="line-through text-gray">
-                  <strong>Total price:</strong> $
+                  <strong>Total Price:</strong> $
                   {(item.price * quantities[item.id]).toFixed(2)}
-                  </div>
-                  <strong>Discount: 10%</strong>
-                  <br/>
-                  <strong>Final Price:</strong> $
-                  {(item.price * quantities[item.id] * 0.9).toFixed(2)}
                 </div>
-                <div className="flex justify-center items-center gap-2">
+                <div className="flex justify-center items-center gap-2 w-1/4">
                   <button
                     onClick={() => handleQuantityIncrease(item.id)}
                     className="border shadow p-2 px-4 bg-green-200"
@@ -84,6 +87,15 @@ const Cart = () => {
                 </div>
               </div>
             ))}
+
+            {/* Overall Summary Section */}
+            <div className="border-t mt-10 pt-6 text-xl text-right pr-6">
+              <div><strong>Total:</strong> ${total.toFixed(2)}</div>
+              <div><strong>Discount (10%):</strong> -${discount.toFixed(2)}</div>
+              <div className="text-2xl mt-2">
+                <strong>Final Total:</strong> ${finalTotal.toFixed(2)}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -92,5 +104,5 @@ const Cart = () => {
 };
 
 export default Cart;
-// This Cart component displays the items in the cart, allows users to adjust quantities, and calculates total prices.
-// It uses the `useLocation` hook to access the cart data passed from the Products page
+// This code defines a Cart component that displays items in the shopping cart.
+// It allows users to increase or decrease the quantity of each item, calculates the total price,
